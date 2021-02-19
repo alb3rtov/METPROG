@@ -11,12 +11,12 @@ public class raizCuadrada {
 		
 		raizCuadradaMath(ns, time1);
 		metodoBabilonico(ns, time2);
-		busquedaBinaria();
-		raizCuadradaRecursiva();
-		
+		busquedaBinaria(ns, time3);
+		//raizCuadradaRecursiva();
+		/*
 		for (int i = 0; i < time1.length; i++) {
 			System.out.println("Tiempo numero: " + ns[i] + " / math: " + time1[i] + "s / bab:  " + time2[i] + "s");
-		}
+		}*/
 	}
 	
 	/**
@@ -83,14 +83,80 @@ public class raizCuadrada {
 			t += (t1 - t0)/1e9;
 		}
 
-		System.out.println("\nTiempo de ejecución: " + t + " segundos");
-	}
-	
-	public static void busquedaBinaria() {
-		
+		System.out.println("\nTiempo de ejecución: " + (t/numbers.length) + " segundos");
 	}
 
-	public static void raizCuadradaRecursiva() {
+	public static void busquedaBinaria(int numbers[], long time[]) {
+		long t1, t0;
+		double t = 0;
 		
+		System.out.println("\nMétodo busqueda binaria:\n");
+		
+		for (int i = 0; i < numbers.length; i++) {
+			t0 = System.nanoTime();
+			System.out.println("Raíz cuadrada de " + numbers[i] + "= " + sqrtBS(numbers[i],numbers[i]/2));
+			t1 = System.nanoTime();
+			time[i] = t1-t0;
+			t += (t1 - t0)/1e9;
+		}
+		
+		System.out.println("\nTiempo de ejecución " + (t/numbers.length) + " segundos");
+	}
+	
+	public static float sqrtBS(int number, int precision) { 
+        int start = 0, end = number; 
+        int mid;  
+        double ans = 0;
+        double increment = 0.01;
+        
+        while (start <= end) { 
+            mid = (start + end) / 2;  
+            
+            if (mid * mid == number) { 
+                ans = mid; 
+                break; 
+            } 
+            
+            if (mid * mid < number) { 
+                start = mid + 1; 
+                ans = mid; 
+            } else { 
+                end = mid - 1; 
+            } 
+        }
+
+        for (int i = 0; i < precision; i++) {
+        	
+            while (ans * ans < number) {
+                ans += increment;
+            } 
+  
+            ans = ans - increment;
+        } 
+        return (float) ans; 
+    } 
+
+	public static void raizCuadradaRecursiva() {	
+		System.out.println(sqrt(9));
+	}
+	
+	public static boolean closeEnough(double guess, double x) {
+		return Math.abs(x - (guess * guess)) <= 0.01;
+	}
+	
+	public static double newGuess(double guess, double x) {
+		return (guess + guess/x)/2;
+	}
+	
+	public static double sqrt(double x) {
+		return root(x/2, x);
+	}
+	
+	public static double root(double guess, double x) {
+		if (closeEnough(guess, x)) {
+			return guess;
+		} else {
+			return root(newGuess(guess, x), x);
+		}
 	}
 }
