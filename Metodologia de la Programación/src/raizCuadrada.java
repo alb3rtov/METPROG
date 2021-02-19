@@ -19,6 +19,13 @@ public class raizCuadrada {
 		}
 	}
 	
+	/**
+	 * <p> Calcula la raiz cuadrada con la biblioteca Math de Java.
+	 * </p>
+	 * @param numbers Array de numeros
+	 * @param time Array con los tiempos de ejecucion
+	 * @author Alberto Vázquez y Ángel Villafranca
+	 */
 	public static void raizCuadradaMath(int numbers[], long time[]) {
 		long t1, t0;
 		double t = 0;
@@ -36,7 +43,13 @@ public class raizCuadrada {
 		System.out.println("\nTiempo de ejecución: " + (t/numbers.length) + " segundos");
 	}
 	
-	
+	/**
+	 * <p> Calcula de raíz cuadrada con el método babilónico
+	 * </p>
+	 * @param numbers Array de numeros
+	 * @param time Array con los tiempos de ejecucion
+	 * @author Alberto Vázquez y Ángel Villafranca
+	 */
 	public static void metodoBabilonico(int numbers[], long time[]) {
 		System.out.println("\nMétodo babilonico: ");
 		
@@ -46,12 +59,13 @@ public class raizCuadrada {
 		double min = Double.MAX_VALUE;
 		double aux, m_babilonico;
 		
-		
 		for (int i = 0; i < numbers.length; i++) {
 			t0 = System.nanoTime();
+			
 			for (int j = 0; j < Integer.MAX_VALUE; j++) {
 				r = j * j;
 				aux = Math.abs(r - numbers[i]);
+				
 				if (aux < min) {
 					n = j;
 					nn = r;
@@ -63,13 +77,12 @@ public class raizCuadrada {
 					break;
 				}
 			}
+			
 			t1 = System.nanoTime();
 			time[i] = t1-t0;
 			t += (t1 - t0)/1e9;
 		}
-		
 
-		
 		System.out.println("\nTiempo de ejecución: " + t + " segundos");
 	}
 	
