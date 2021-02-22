@@ -7,6 +7,8 @@
  * @author Alberto Vázquez Martínez y Ángel Villafranca Iniesta
  */
 public class raizCuadrada {
+	
+	final static int SQUARE = 2;
 
 	public static void main(String[] args) {
 		
@@ -116,6 +118,13 @@ public class raizCuadrada {
 		System.out.println("\nTiempo de ejecución " + (t/numbers.length) + " segundos");
 	}
 	
+	/**
+	 * <p>
+	 * </p>
+	 * @param numbers Array de números
+	 * @param time Array con los tiempos de ejecución
+	 * @return Raiz cuadrada del número dado
+	 */
 	public static float sqrtBS(int number, int precision) { 
         int start = 0, end = number; 
         int mid;  
@@ -147,7 +156,13 @@ public class raizCuadrada {
         
         return (float) ans; 
     } 
-
+	
+	/**
+	 * <p>
+	 * </p>
+	 * @param numbers Array de números
+	 * @param time Array con los tiempos de ejecución
+	 */
 	public static void raizCuadradaRecursiva(int numbers[], long time[]) {
 		long t1, t0;
 		double t = 0;
@@ -156,7 +171,7 @@ public class raizCuadrada {
 		
 		for (int i = 0; i < numbers.length; i++) {
 			t0 = System.nanoTime();
-			System.out.printf("Raíz cuadrada de %d = %.2f\n", numbers[i], root(numbers[i],2));
+			System.out.printf("Raíz cuadrada de %d = %.2f\n", numbers[i], root(numbers[i],SQUARE));
 			t1 = System.nanoTime();
 			time[i] = t1-t0;
 			t += (t1 - t0)/1e9;
