@@ -6,6 +6,9 @@
  * </p>
  * @author Alberto Vázquez Martínez y Ángel Villafranca Iniesta
  */
+
+package P1;
+
 public class raizCuadrada {
 	
 	final static int SQUARE = 2;
@@ -180,6 +183,13 @@ public class raizCuadrada {
 		System.out.println("\nTiempo de ejecución " + (t/numbers.length) + " segundos");
 	}
 	
+	/**
+	 * 
+	 * @param w
+	 * @param g
+	 * @param n
+	 * @return
+	 */
     public static double f(double w, double g, int n) {
         return (Math.pow(g,n) - w);
     }
