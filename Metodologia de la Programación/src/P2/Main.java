@@ -1,3 +1,14 @@
+/*********************************************************
+ * 
+ * Class Name: Main.java
+ * Clase que genera una serie de objetos Player con atributos
+ * aleatorios, encuentra al jugador impostor y comprueba
+ * quien gana la partida.
+ * 
+ * @author Alberto Vázquez Martínez y Ángel Villafranca Iniesta
+ * 
+ *********************************************************/
+
 package P2;
 
 import java.util.ArrayList;
@@ -9,6 +20,10 @@ public class Main {
 	static int impostorPosition = 0;
 	final static Scanner KEYBOARD = new Scanner(System.in);
 	
+	/**
+	 * Método principal que llama a los demás métodos
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		int playersNumber = 0;
 
@@ -28,6 +43,14 @@ public class Main {
 		System.out.println("The " + checkWinner(players, impostorPosition) + " wins the game"); 
 	}
 	
+	/**
+	 * Comprueba quien gana la partida respecto
+	 * a las tareas y experiencia del Impostor y
+	 * el jugador a su derecha.
+	 * @param players Lista de jugadores generados aleatoriamente
+	 * @param impostorPosition Posicion de la lista del jugador impostor
+	 * @return Devuelve el nombre del jugador/es ganador/es
+	 */
 	public static String checkWinner(ArrayList<Player> players, int impostorPosition) {
 		
 		int rPlayerPosition = 0;
@@ -48,23 +71,28 @@ public class Main {
 		if (impostorTasks > rPlayerTasks) {
 			winner = "impostor";
 		} else if (rPlayerTasks > impostorTasks) {
-			winner = "tripulation";
+			winner = "crew";
 		} else {
 			int impostorExperience = players.get(impostorPosition).getExperience();
 			int rPlayerExperience = players.get(rPlayerPosition).getExperience();
 
 			if (impostorExperience > rPlayerExperience) {
-				winner = "impostor";
+				winner = "crew";
 			} else if (rPlayerExperience > impostorExperience) {
-				winner = "tripulation";
+				winner = "crew";
 			} else {
-				winner = "tripulation";
+				winner = "crew";
 			}
 		}
 		
 		return winner;
 	}
 	
+	/**
+	 * Solicita el numero de jugadores a generar
+	 * y devuelve el valor.
+	 * @return Devuelve el numero de jugadores a generar
+	 */
 	public static int requestNumbersPlayers() {
 		
 		int playersNumber = 0;
@@ -77,6 +105,12 @@ public class Main {
 		return playersNumber;
 	}
 	
+	/**
+	 * Crea los jugadores y genera aleatoriamente 
+	 * los atributos de cada uno de los jugadores.
+	 * @param playersNumber Numero de jugadores de la partida
+	 * @param players Lista de jugadores aleatorios
+	 */
 	public static void createPlayers(int playersNumber, ArrayList<Player> players) {
 		
 		int experience = 0;
@@ -100,6 +134,12 @@ public class Main {
 		}
 	}
 	
+	/**
+	 * Genera un numero entero aleatorio entre un rango especificado
+	 * @param min Valor rango minimo
+	 * @param max Valor rango maximo
+	 * @return Valor entero generado
+	 */
 	public static int generateRandomNumber(int min, int max) {
 		int number = 0;
 		Random rn = new Random();	
@@ -107,6 +147,14 @@ public class Main {
 		return number;
 	}
 	
+	/**
+	 * Encuentra el jugador impostor de una lista 
+	 * de jugadores de manera recursiva.
+	 * @param players Lista de jugadores aleatorios
+	 * @param lowerLimit Limite inferior de la lista
+	 * @param upperLimit Limite superior de la lista
+	 * @return Ira del jugador
+	 */
 	public static int findImpostor(ArrayList<Player> players, int lowerLimit, int upperLimit) {
 		int rage = -1;
 		int rageLeft = 0;

@@ -1,3 +1,11 @@
+/*********************************************************
+ * 
+ * Class Name: Player.java
+ * Clase que define los atributos y métodos del jugador
+ * @author Alberto Vázquez Martínez y Ángel Villafranca Iniesta
+ * 
+ *********************************************************/
+
 package P2;
 
 public class Player {
