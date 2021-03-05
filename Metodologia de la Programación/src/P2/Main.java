@@ -18,12 +18,13 @@ public class Main {
 		createPlayers(playersNumber, players);
 		findImpostor(players, 0, players.size()-1);
 
-		/*
-		for (int i = 0; i < players.size(); i++) {
-			System.out.println(players.get(i).toString());
-		}*/
 		
-		/*System.out.println(impostorPosition);*/
+		for (int i = 0; i < players.size(); i++) {
+			System.out.println(i);
+			System.out.println(players.get(i).toString());
+		}
+		
+		System.out.println(impostorPosition);
 		System.out.println("The " + checkWinner(players, impostorPosition) + " wins the game"); 
 	}
 	
@@ -41,8 +42,8 @@ public class Main {
 		int impostorTasks = players.get(impostorPosition).getTasks();
 		int rPlayerTasks = players.get(rPlayerPosition).getTasks();
 		
-		/*System.out.println("Impostor tasks= " + impostorTasks);
-		System.out.println("Player tasks= " + rPlayerTasks);*/
+		System.out.println("Impostor tasks= " + impostorTasks);
+		System.out.println("Player tasks= " + rPlayerTasks);
 		
 		if (impostorTasks > rPlayerTasks) {
 			winner = "impostor";
@@ -112,24 +113,29 @@ public class Main {
 		int rageRight = 0;
 		
 		if (lowerLimit==upperLimit) {
-			rage = players.get(lowerLimit).getRage();
+			if (players.get(lowerLimit).getRage() == 2) {
+				impostorPosition = upperLimit;
+			} else {
+				rage = players.get(lowerLimit).getRage();
+			}
 		} else {
 			int middle = (lowerLimit + upperLimit)/2;
-			rageLeft += findImpostor(players, lowerLimit, middle);
-			rageRight += findImpostor(players, middle+1, upperLimit);
-			
-			if (rageRight != -1 && rageLeft != -1) {
-				if (rageLeft == rageRight) {
-					rage = rageLeft+rageRight;
-				} else if (rageLeft < rageRight) {
-					impostorPosition = lowerLimit+1;
-				} else if (rageRight < rageLeft) {
-					impostorPosition = upperLimit-1;
+			rageLeft = findImpostor(players, lowerLimit, middle);
+
+			if (rageLeft != -1) {
+				rageRight = findImpostor(players, middle+1, upperLimit);
+				
+				if (rageRight != -1) {
+					if (rageLeft == rageRight) {
+						rage = rageLeft;
+					} else if (rageLeft < rageRight) {
+						impostorPosition = lowerLimit+1;
+					} else if (rageRight < rageLeft) {
+						impostorPosition = upperLimit-1;
+					}
 				}
 			}
-
 		}
-
 		return rage;
 	}
 }
