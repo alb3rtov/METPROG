@@ -1,9 +1,9 @@
 /**
  * Class Name: raizCuadrada
- * <p>
+ * 
  * Clase que calcula de 4 formas diferentes la raíz cuadrada
  * de un array de numeros enteros.
- * </p>
+ * 
  * @author Alberto Vázquez Martínez y Ángel Villafranca Iniesta
  */
 
@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class raizCuadrada {
 	
 	final static int SQUARE = 2;
-
+	
 	public static void main(String[] args) throws FileNotFoundException {
 		
 		//int ns [] = {1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225};
@@ -51,10 +51,10 @@ public class raizCuadrada {
 	}
 	
 	/**
-	 * <p> Imprime los resultados de tiempo respecto a los numeros de la lista.
-	 * </p>
-	 * @param numbers
-	 * @param sqrt1
+	 * Imprime los resultados de tiempo respecto a los numeros de la lista.
+	 * 
+	 * @param numbers Array con los números a calcular su raiz cuadrada
+	 * @param sqrt1 
 	 * @param sqrt2
 	 * @param sqrt3
 	 * @param sqrt4
@@ -66,16 +66,17 @@ public class raizCuadrada {
 	public static void printTimeResults(ArrayList<Float> numbers, double sqrt1[], double sqrt2[], 
 				double sqrt3[], double sqrt4[], long time1[], long time2[], long time3[], long time4[]) {
 		
-		System.out.printf("\n%-10s |   %-10s |   %-15s |   %-15s |   %-10s\n","Number","Math (ns)","Babilonico (ns)","Binary Search (ns)","Recursive (ns)");
-		System.out.println("-----------|--------------|-------------------|----------------------|-----------------");
+		System.out.printf("\n%-10s |   %-25s   |   %-25s    |   %-35s       |   %-20s\n","Number","Math","Babilonico","Binary Search","Recursive");
+		System.out.println("-----------|-------------------------------|--------------------------------|---------------------------------------------|-------------------------------------");
 		for (int i = 0; i < numbers.size(); i++) {
-			System.out.printf("%-10s |   %-10s |   %-15s |   %-15s    |   %-10s\n",numbers.get(i), time1[i], time2[i], time3[i], time4[i]);
+			System.out.printf("%-10s |   %-12s / %-12s |   %-12s / %-13s |   %-17s / %-18s    |   %-12s / %-12s \n",numbers.get(i), time1[i]+" (ns)", sqrt1[i], time2[i]+" (ns)", sqrt2[i], time3[i]+" (ns)", sqrt3[i], time4[i]+" (ns)", sqrt4[i]);
 		}
+		System.out.println("\n(Time / Sqrt)");
 	}
 	
 	/**
-	 * <p> Calcula la raiz cuadrada con la biblioteca Math de Java.
-	 * </p>
+	 * Calcula la raiz cuadrada con la biblioteca Math de Java.
+	 * 
 	 * @param numbers Array de números
 	 * @param time Array con los tiempos de ejecución
 	 */
@@ -98,8 +99,8 @@ public class raizCuadrada {
 	}
 	
 	/**
-	 * <p> Calcula de raíz cuadrada con el método babilónico
-	 * </p>
+	 * Calcula de raíz cuadrada con el método babilónico
+	 * 
 	 * @param numbers Array de números
 	 * @param time Array con los tiempos de ejecución
 	 */
@@ -125,7 +126,7 @@ public class raizCuadrada {
 					min = aux;
 				} else {
 					sqrt[i] = (numbers.get(i) + nn) / (2 * n);
-					//System.out.println("Raiz cuadrada de " + numbers.get(i) + "= " + m_babilonico);
+					//System.out.println("Raiz cuadrada de " + numbers.get(i) + "= " + sqrt[i]);
 					min = Double.MAX_VALUE;
 					break;
 				}
@@ -140,8 +141,8 @@ public class raizCuadrada {
 	}
 
 	/**
-	 * <p>
-	 * </p>
+	 * Recorre el array de numeros llamando a la funcion
+	 * que calcula la raiz cuadrada con el método binario
 	 * @param numbers Array de números
 	 * @param time Array con los tiempos de ejecución
 	 */
@@ -163,8 +164,7 @@ public class raizCuadrada {
 	}
 	
 	/**
-	 * <p>
-	 * </p>
+	 * Calcula la raiz cuadrado con una busqueda binaria
 	 * @param numbers Array de números
 	 * @param time Array con los tiempos de ejecución
 	 * @return Raiz cuadrada del número dado
@@ -202,9 +202,7 @@ public class raizCuadrada {
     } 
 	
 	/**
-	 * <p>
 	 * Bucle que recorre el array de numeros llama a root para calcula la raiz cuadrada
-	 * </p>
 	 * @param numbers Array de números
 	 * @param time Array con los tiempos de ejecución
 	 */
