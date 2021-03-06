@@ -26,21 +26,37 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		int playersNumber = 0;
-
+		long t1, t0;
+		double t = 0;
+		double totro = 0;
+		int posicion = 0;
+		
 		ArrayList<Player> players = new ArrayList<Player>();
 		
 		playersNumber = requestNumbersPlayers();
 		createPlayers(playersNumber, players);
+		t0 = System.nanoTime();
 		findImpostor(players, 0, players.size()-1);
-
+		t1 = System.nanoTime();
+		t = (t1 - t0)/1e9;
 		
+		t0 = System.nanoTime();
 		for (int i = 0; i < players.size(); i++) {
-			System.out.println(i);
-			System.out.println(players.get(i).toString());
+			if (players.get(i).getRage()== 2) {
+				posicion = i;
+				break;
+			}
+			//System.out.println(i);
+			//System.out.println(players.get(i).toString());
 		}
+		t1 = System.nanoTime();
+		totro = (t1-t0)/1e9;
+		
+		System.out.println(posicion);
 		
 		System.out.println(impostorPosition);
 		System.out.println("The " + checkWinner(players, impostorPosition) + " wins the game"); 
+		System.out.println("Time for " + playersNumber + " players: " + t + " (s) y " + totro + " (s)");
 	}
 	
 	/**
