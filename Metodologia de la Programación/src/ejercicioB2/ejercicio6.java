@@ -1,3 +1,12 @@
+/*
+ * Alberto Vázquez Martínez 2ºC
+ * 
+ * El trabajo de la clase de hoy consistirá en la implementación de un algoritmo
+ * que seleccione el K-ésimo menor elemento de un vector de N elementos dado, 
+ * utilizando una estrategia de resolución divide y vencerás. La complejidad del
+ * procedimiento debe ser lineal.
+ *   
+ */
 package ejercicioB2;
 
 public class ejercicio6 {
