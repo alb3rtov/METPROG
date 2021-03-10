@@ -18,9 +18,7 @@ public class raizCuadrada {
 	final static int SQUARE = 2;
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		
-		//int ns [] = {1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225};
-		//int ns [] = {400,504,675,876,987,1023,2321,3542,4353,5646,6040,8004,10320,12340};
+
 		ArrayList<Float> ns = new ArrayList<>();
 
 		File f=new File("numbers.txt");
@@ -88,7 +86,6 @@ public class raizCuadrada {
 		
 		for (int i = 0; i < numbers.size(); i++) {
 			t0 = System.nanoTime();
-			//System.out.println("Raíz cuadrada de " + numbers.get(i) + " = " + Math.sqrt(numbers.get(i)));
 			sqrt[i] = Math.sqrt(numbers.get(i));
 			t1 = System.nanoTime();
 			time[i] = t1-t0;
@@ -126,7 +123,6 @@ public class raizCuadrada {
 					min = aux;
 				} else {
 					sqrt[i] = (numbers.get(i) + nn) / (2 * n);
-					//System.out.println("Raiz cuadrada de " + numbers.get(i) + "= " + sqrt[i]);
 					min = Double.MAX_VALUE;
 					break;
 				}
@@ -153,8 +149,7 @@ public class raizCuadrada {
 		
 		for (int i = 0; i < numbers.size(); i++) {
 			t0 = System.nanoTime();
-			//System.out.println("Raíz cuadrada de " + numbers.get(i) + "= " + sqrtBS(numbers.get(i),numbers.get(i)/2));
-			sqrt[i] = sqrtBS(numbers.get(i),numbers.get(i)/2);
+			sqrt[i] = sqrtBinarySearch(numbers.get(i),0,numbers.get(i));
 			t1 = System.nanoTime();
 			time[i] = t1-t0;
 			t += (t1 - t0)/1e9;
@@ -162,44 +157,30 @@ public class raizCuadrada {
 		
 		System.out.println("Tiempo de ejecución " + (t/numbers.size()) + " segundos");
 	}
-	
+
 	/**
 	 * Calcula la raiz cuadrado con una busqueda binaria
+	 * de manera recursiva
 	 * @param numbers Array de números
 	 * @param time Array con los tiempos de ejecución
 	 * @return Raiz cuadrada del número dado
 	 */
-	public static float sqrtBS(float number, float precision) { 
-        float start = 0, end = number; 
-        float mid;  
-        double ans = 0;
-        double increment = 0.01;
-        
-        while (start <= end) { 
-            mid = (start + end) / 2;  
-            
-            if (mid * mid == number) { 
-                ans = mid; 
-                break; 
-            } 
-            
-            if (mid * mid < number) { 
-                start = mid + 1; 
-                ans = mid; 
-            } else { 
-                end = mid - 1; 
-            } 
-        }
-
-        for (int i = 0; i < precision; i++) {
-            while (ans * ans < number) {
-                ans += increment;
-            } 
-            ans = ans - increment;
-        } 
-        
-        return (float) ans; 
-    } 
+	public static double sqrtBinarySearch(double number, double low, double high) {
+		double currentRoot;
+		double currentApprox;
+		double aprox = 0.00001;
+		
+		currentRoot = (low+high)/2;
+		currentApprox = Math.pow(currentRoot, 2);
+		
+		if (Math.abs(currentApprox-number) < aprox) {
+			return currentRoot;
+		} else if (currentApprox > number) {
+			return sqrtBinarySearch(number, low, currentRoot);
+		} else {
+			return sqrtBinarySearch(number, currentRoot, high);
+		}
+	}
 	
 	/**
 	 * Bucle que recorre el array de numeros llama a root para calcula la raiz cuadrada
@@ -214,7 +195,6 @@ public class raizCuadrada {
 		
 		for (int i = 0; i < numbers.size(); i++) {
 			t0 = System.nanoTime();
-			//System.out.printf("Raíz cuadrada de %.1f = %.2f\n", numbers.get(i), root(numbers.get(i),SQUARE));
 			sqrt[i] = root(numbers.get(i), SQUARE);
 			t1 = System.nanoTime();
 			time[i] = t1-t0;
