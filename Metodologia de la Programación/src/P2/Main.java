@@ -31,35 +31,23 @@ public class Main {
 		double t = 0;
 		ArrayList<Player> players = new ArrayList<Player>();
 		
-		double tIterativo = 0;
-		int impostorPosition2 = 0;
-		
 		playersNumber = requestNumbersPlayers();
 		createPlayers(playersNumber, players);
 		t0 = System.nanoTime();
 		impostorPosition = findImpostor(players, 0, players.size()-1);
 		t1 = System.nanoTime();
 		t = (t1 - t0)/1e9;
-	
-
-		//Método iterativo para comparar.
-		t0 = System.nanoTime();
-		impostorPosition2 = iterativeMethod(players);
-		t1 = System.nanoTime();
-		tIterativo = (t1-t0)/1e9;
 		
-
 		System.out.println("\nImpostor position: " + impostorPosition);
 		System.out.println("The " + checkWinner(players, impostorPosition) + " wins the game"); 
 		System.out.println("Time for " + playersNumber + " players: " + t + " (s)");
-		System.out.println("(Iteractive method) Time for " + playersNumber + " players: " + tIterativo + " (s)");
 	}
 	
 	public static int iterativeMethod(ArrayList<Player> players) {
 		int posicion = -1;
 		
 		for (int i = 0; i < players.size(); i++) {
-			if (players.get(i).getRage()== 2) {
+			if (players.get(i).getRage() == 2) {
 				posicion = i;
 				break;
 			}
@@ -155,7 +143,7 @@ public class Main {
 			} else {
 				rage = 1;
 			}
-			
+		
 			Player player = new Player(experience, tasks, rage);
 			players.add(player);
 		}
@@ -173,42 +161,7 @@ public class Main {
 		number = rn.nextInt(max - min + 1) + min;
 		return number;
 	}
-	
 
-	/*
-	public static int findImpostor(ArrayList<Player> players, int lowerLimit, int upperLimit) {
-		int rage = -1;
-		int rageLeft = 0;
-		int rageRight = 0;
-		
-		if (lowerLimit==upperLimit) {
-			if (players.get(lowerLimit).getRage() == 2) {
-				impostorPosition = upperLimit;
-			} else {
-				rage = players.get(lowerLimit).getRage();
-			}
-		} else {
-			int middle = (lowerLimit + upperLimit)/2;
-			rageLeft = findImpostor(players, lowerLimit, middle);
-
-			if (rageLeft != -1) {
-				rageRight = findImpostor(players, middle+1, upperLimit);
-				
-				if (rageRight != -1) {
-					if (rageLeft == rageRight) {
-						rage = rageLeft;
-					} else if (rageLeft < rageRight) {
-						impostorPosition = lowerLimit+1;
-					} else if (rageRight < rageLeft) {
-						impostorPosition = upperLimit-1;
-					}
-				}
-			}
-		}
-		return rage;
-	}
-	*/
-	
 	/**
 	 * Encuentra el jugador impostor de una lista 
 	 * de jugadores de manera recursiva. 
@@ -227,7 +180,7 @@ public class Main {
 		} else {
 			
 			int middle = (lowerLimit+upperLimit)/2;
-			if ((upperLimit-lowerLimit)%2 == 0) { //Numero de jugadores impares
+			if ((upperLimit-lowerLimit) % 2 == 0) { //Numero de jugadores impares
 				
 				int rageLeft = sumRage(players, lowerLimit, middle-1);
 				int rageRight = sumRage(players, middle+1, upperLimit);
@@ -252,7 +205,6 @@ public class Main {
 				}
 			}
 		}
-
 		return pos;
 	}
 	
@@ -281,8 +233,6 @@ public class Main {
 				rage = rageLeft + rageRight;
 			}
 		}
-		
-
 		return rage;
 	}
 }
