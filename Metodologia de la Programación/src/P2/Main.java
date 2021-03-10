@@ -41,8 +41,8 @@ public class Main {
 		t1 = System.nanoTime();
 		t = (t1 - t0)/1e9;
 	
+
 		//Método iterativo para comparar.
-		
 		t0 = System.nanoTime();
 		impostorPosition2 = iterativeMethod(players);
 		t1 = System.nanoTime();
@@ -63,8 +63,6 @@ public class Main {
 				posicion = i;
 				break;
 			}
-			//System.out.println(i);
-			//System.out.println(players.get(i).toString());
 		}
 		return posicion;
 	}
@@ -213,7 +211,8 @@ public class Main {
 	
 	/**
 	 * Encuentra el jugador impostor de una lista 
-	 * de jugadores de manera recursiva.
+	 * de jugadores de manera recursiva. 
+	 * Compara la suma de las iras de dos "sublistas".
 	 * @param players Lista de jugadores aleatorios
 	 * @param lowerLimit Limite inferior de la lista
 	 * @param upperLimit Limite superior de la lista
@@ -258,11 +257,11 @@ public class Main {
 	}
 	
 	/**
-	 * 
+	 * Realiza la suma las iras de los dos lados.
 	 * @param players
 	 * @param lowerLimit
 	 * @param upperLimit
-	 * @return
+	 * @return Suma de los dos lados
 	 */
 	public static int sumRage(ArrayList<Player> players, int lowerLimit, int upperLimit) {
 		int rage = 0;
