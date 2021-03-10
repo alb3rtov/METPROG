@@ -18,7 +18,6 @@ import java.util.Random;
 
 public class Main {
 
-	static int impostorPosition = 0;
 	final static Scanner KEYBOARD = new Scanner(System.in);
 	
 	/**
@@ -26,33 +25,34 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		int impostorPosition = 0;
 		int playersNumber = 0;
 		long t1, t0;
 		double t = 0;
 		ArrayList<Player> players = new ArrayList<Player>();
 		
-		//double tIterativo = 0;
-		//int position;
+		double tIterativo = 0;
+		int impostorPosition2 = 0;
 		
 		playersNumber = requestNumbersPlayers();
 		createPlayers(playersNumber, players);
 		t0 = System.nanoTime();
-		findImpostor(players, 0, players.size()-1);
+		impostorPosition = findImpostor(players, 0, players.size()-1);
 		t1 = System.nanoTime();
 		t = (t1 - t0)/1e9;
-		
+	
 		//Método iterativo para comparar.
-		/*
+		
 		t0 = System.nanoTime();
-		position = iterativeMethod(players);
+		impostorPosition2 = iterativeMethod(players);
 		t1 = System.nanoTime();
 		tIterativo = (t1-t0)/1e9;
-		*/
 		
+
 		System.out.println("\nImpostor position: " + impostorPosition);
 		System.out.println("The " + checkWinner(players, impostorPosition) + " wins the game"); 
 		System.out.println("Time for " + playersNumber + " players: " + t + " (s)");
-		//System.out.println("(Iteractive method) Time for " + playersNumber + " players: " + tIterativo + " (s)");
+		System.out.println("(Iteractive method) Time for " + playersNumber + " players: " + tIterativo + " (s)");
 	}
 	
 	public static int iterativeMethod(ArrayList<Player> players) {
@@ -176,14 +176,8 @@ public class Main {
 		return number;
 	}
 	
-	/**
-	 * Encuentra el jugador impostor de una lista 
-	 * de jugadores de manera recursiva.
-	 * @param players Lista de jugadores aleatorios
-	 * @param lowerLimit Limite inferior de la lista
-	 * @param upperLimit Limite superior de la lista
-	 * @return Ira del jugador
-	 */
+
+	/*
 	public static int findImpostor(ArrayList<Player> players, int lowerLimit, int upperLimit) {
 		int rage = -1;
 		int rageLeft = 0;
@@ -213,6 +207,83 @@ public class Main {
 				}
 			}
 		}
+		return rage;
+	}
+	*/
+	
+	/**
+	 * Encuentra el jugador impostor de una lista 
+	 * de jugadores de manera recursiva.
+	 * @param players Lista de jugadores aleatorios
+	 * @param lowerLimit Limite inferior de la lista
+	 * @param upperLimit Limite superior de la lista
+	 * @return Ira del jugador
+	 */
+	public static int findImpostor(ArrayList<Player> players, int lowerLimit, int upperLimit) {
+		int pos =0;
+
+		if (lowerLimit == upperLimit) {
+			pos = lowerLimit;
+			
+		} else {
+			
+			int middle = (lowerLimit+upperLimit)/2;
+			if ((upperLimit-lowerLimit)%2 == 0) { //Numero de jugadores impares
+				
+				int rageLeft = sumRage(players, lowerLimit, middle-1);
+				int rageRight = sumRage(players, middle+1, upperLimit);
+
+				if (rageLeft > rageRight) {
+						pos = findImpostor(players, lowerLimit, middle-1);
+				} else if (rageLeft < rageRight) {
+					pos = findImpostor(players, middle+1, upperLimit);
+				}
+				else {
+					pos = middle;
+				}
+			} else { //Numero de jugadores pares
+
+				int rageLeft = sumRage(players, lowerLimit, middle);
+				int rageRight = sumRage(players, middle+1, upperLimit);
+				
+				if (rageLeft > rageRight) {
+					pos=findImpostor(players, lowerLimit, middle);
+				} else if (rageLeft < rageRight) {
+					pos=findImpostor(players, middle+1, upperLimit);
+				}
+			}
+		}
+
+		return pos;
+	}
+	
+	/**
+	 * 
+	 * @param players
+	 * @param lowerLimit
+	 * @param upperLimit
+	 * @return
+	 */
+	public static int sumRage(ArrayList<Player> players, int lowerLimit, int upperLimit) {
+		int rage = 0;
+		
+		if (lowerLimit == upperLimit) {
+			rage = players.get(lowerLimit).getRage();
+		} else {
+			int middle = (lowerLimit+upperLimit)/2;
+			if ((upperLimit-lowerLimit)%2 == 0) {
+				int rageLeft = sumRage(players, lowerLimit, middle-1);
+				int rageRight = sumRage(players, middle+1, upperLimit);
+				rage = rageLeft + rageRight + players.get(middle).getRage();
+				
+			} else {
+				int rageLeft = sumRage(players, lowerLimit, middle);
+				int rageRight = sumRage(players, middle+1, upperLimit);
+				rage = rageLeft + rageRight;
+			}
+		}
+		
+
 		return rage;
 	}
 }
