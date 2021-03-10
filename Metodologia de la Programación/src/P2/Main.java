@@ -82,11 +82,7 @@ public class Main {
 		int rPlayerPosition = 0;
 		String winner = "";
 		
-		if (impostorPosition == players.size()-1) {
-			rPlayerPosition = 0;
-		} else {
-			rPlayerPosition = impostorPosition+1;
-		}
+		rPlayerPosition = (impostorPosition+1)%players.size();
 		
 		int impostorTasks = players.get(impostorPosition).getTasks();
 		int rPlayerTasks = players.get(rPlayerPosition).getTasks();
