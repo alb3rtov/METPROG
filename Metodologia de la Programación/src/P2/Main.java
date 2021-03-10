@@ -12,6 +12,7 @@
 package P2;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Random;
 
@@ -115,8 +116,15 @@ public class Main {
 		int playersNumber = 0;
 		
 		do {
-			System.out.println("Introduzca el número de jugadores: ");
-			playersNumber = KEYBOARD.nextInt();
+			try {
+				System.out.println("Introduzca el número de jugadores: ");
+				playersNumber = KEYBOARD.nextInt();
+				
+			} catch (InputMismatchException e) {
+				System.out.println("Error leyendo entero.");
+				KEYBOARD.next();
+			}
+
 		} while (playersNumber <= 2);
 		
 		return playersNumber;
