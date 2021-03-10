@@ -28,8 +28,8 @@ public class Main {
 		int playersNumber = 0;
 		long t1, t0;
 		double t = 0;
-		double totro = 0;
-		int posicion = 0;
+		//double totro = 0;
+		//int posicion = 0;
 		
 		ArrayList<Player> players = new ArrayList<Player>();
 		
@@ -40,6 +40,8 @@ public class Main {
 		t1 = System.nanoTime();
 		t = (t1 - t0)/1e9;
 		
+		//Método iterativo para comparar.
+		/*
 		t0 = System.nanoTime();
 		for (int i = 0; i < players.size(); i++) {
 			if (players.get(i).getRage()== 2) {
@@ -51,12 +53,11 @@ public class Main {
 		}
 		t1 = System.nanoTime();
 		totro = (t1-t0)/1e9;
+		*/
 		
-		System.out.println(posicion);
-		
-		System.out.println(impostorPosition);
+		System.out.println("\nImpostor position: " + impostorPosition);
 		System.out.println("The " + checkWinner(players, impostorPosition) + " wins the game"); 
-		System.out.println("Time for " + playersNumber + " players: " + t + " (s) y " + totro + " (s)");
+		System.out.println("Time for " + playersNumber + " players: " + t + " (s)");
 	}
 	
 	/**
