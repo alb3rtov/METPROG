@@ -29,10 +29,10 @@ public class Main {
 		int playersNumber = 0;
 		long t1, t0;
 		double t = 0;
-		//double totro = 0;
-		//int posicion = 0;
-		
 		ArrayList<Player> players = new ArrayList<Player>();
+		
+		//double tIterativo = 0;
+		//int position;
 		
 		playersNumber = requestNumbersPlayers();
 		createPlayers(playersNumber, players);
@@ -44,6 +44,20 @@ public class Main {
 		//Método iterativo para comparar.
 		/*
 		t0 = System.nanoTime();
+		position = iterativeMethod(players);
+		t1 = System.nanoTime();
+		tIterativo = (t1-t0)/1e9;
+		*/
+		
+		System.out.println("\nImpostor position: " + impostorPosition);
+		System.out.println("The " + checkWinner(players, impostorPosition) + " wins the game"); 
+		System.out.println("Time for " + playersNumber + " players: " + t + " (s)");
+		//System.out.println("(Iteractive method) Time for " + playersNumber + " players: " + tIterativo + " (s)");
+	}
+	
+	public static int iterativeMethod(ArrayList<Player> players) {
+		int posicion = -1;
+		
 		for (int i = 0; i < players.size(); i++) {
 			if (players.get(i).getRage()== 2) {
 				posicion = i;
@@ -52,13 +66,7 @@ public class Main {
 			//System.out.println(i);
 			//System.out.println(players.get(i).toString());
 		}
-		t1 = System.nanoTime();
-		totro = (t1-t0)/1e9;
-		*/
-		
-		System.out.println("\nImpostor position: " + impostorPosition);
-		System.out.println("The " + checkWinner(players, impostorPosition) + " wins the game"); 
-		System.out.println("Time for " + playersNumber + " players: " + t + " (s)");
+		return posicion;
 	}
 	
 	/**
