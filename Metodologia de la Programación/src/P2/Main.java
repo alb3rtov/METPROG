@@ -38,11 +38,6 @@ public class Main {
 		t1 = System.nanoTime();
 		t = (t1 - t0)/1e9;
 		
-		for (int i = 0; i < players.size(); i++) {
-			System.out.println(i);
-			System.out.println(players.get(i).toString());
-		}
-		
 		System.out.println("\nImpostor position: " + impostorPosition);
 		System.out.println("The " + checkWinner(players, impostorPosition) + " wins the game"); 
 		System.out.println("Time for " + playersNumber + " players: " + t + " (s)");
