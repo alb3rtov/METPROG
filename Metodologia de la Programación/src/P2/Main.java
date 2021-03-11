@@ -38,6 +38,11 @@ public class Main {
 		t1 = System.nanoTime();
 		t = (t1 - t0)/1e9;
 		
+		for (int i = 0; i < players.size(); i++) {
+			System.out.println(i);
+			System.out.println(players.get(i).toString());
+		}
+		
 		System.out.println("\nImpostor position: " + impostorPosition);
 		System.out.println("The " + checkWinner(players, impostorPosition) + " wins the game"); 
 		System.out.println("Time for " + playersNumber + " players: " + t + " (s)");
@@ -218,21 +223,10 @@ public class Main {
 	public static int sumRage(ArrayList<Player> players, int lowerLimit, int upperLimit) {
 		int rage = 0;
 		
-		if (lowerLimit == upperLimit) {
-			rage = players.get(lowerLimit).getRage();
-		} else {
-			int middle = (lowerLimit+upperLimit)/2;
-			if ((upperLimit-lowerLimit)%2 == 0) {
-				int rageLeft = sumRage(players, lowerLimit, middle-1);
-				int rageRight = sumRage(players, middle+1, upperLimit);
-				rage = rageLeft + rageRight + players.get(middle).getRage();
-				
-			} else {
-				int rageLeft = sumRage(players, lowerLimit, middle);
-				int rageRight = sumRage(players, middle+1, upperLimit);
-				rage = rageLeft + rageRight;
-			}
+		for (int i = lowerLimit; i <= upperLimit; i++) {
+			rage = rage + players.get(i).getRage();
 		}
+		
 		return rage;
 	}
 }
