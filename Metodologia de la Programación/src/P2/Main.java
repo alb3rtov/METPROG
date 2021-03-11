@@ -209,7 +209,8 @@ public class Main {
 	}
 	
 	/**
-	 * Realiza la suma las iras de los dos lados.
+	 * Realiza la suma de las iras y devuelve la suma total desde
+	 * el limite inferior y el limite superior
 	 * @param players
 	 * @param lowerLimit
 	 * @param upperLimit
