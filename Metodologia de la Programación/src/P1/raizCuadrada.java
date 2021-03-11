@@ -15,6 +15,7 @@ import java.util.Scanner;
 
 public class raizCuadrada {
 	
+	final static double APPROACH = 0.00001;
 	final static int SQUARE = 2;
 	
 	public static void main(String[] args) throws FileNotFoundException {
@@ -42,7 +43,7 @@ public class raizCuadrada {
 		
 		sqrtMath(ns, sqrt1, time1);
 		sqrtBabilonico(ns, sqrt2, time2);
-		sqrtBinarySearch(ns, sqrt3, time3);
+		sqrtBSLoop(ns, sqrt3, time3);
 		sqrtRecursive(ns, sqrt4, time4);
 		
 		printTimeResults(ns, sqrt1, sqrt2, sqrt3, sqrt4, time1, time2, time3, time4);
@@ -64,12 +65,15 @@ public class raizCuadrada {
 	public static void printTimeResults(ArrayList<Float> numbers, double sqrt1[], double sqrt2[], 
 				double sqrt3[], double sqrt4[], long time1[], long time2[], long time3[], long time4[]) {
 		
-		System.out.printf("\n%-10s |   %-25s   |   %-25s    |   %-35s       |   %-20s\n","Number","Math","Babilonico","Binary Search","Recursive");
-		System.out.println("-----------|-------------------------------|--------------------------------|---------------------------------------------|-------------------------------------");
+		System.out.println("\n+------------------------------------+");
+		System.out.println("| TABLA CON RESULTADOS (Time / Sqrt) |");
+		System.out.println("+--------------+---------------------+---------+--------------------------------+----------------------------------------+------------------------------+");
+		System.out.printf("|   %-10s |   %-25s   |   %-25s    |   %-35s  |   %-20s       |\n","Number","Math.sqrt","Babilonico","Binary Search","Recursive");
+		System.out.println("|--------------|-------------------------------|--------------------------------|----------------------------------------|------------------------------|");
 		for (int i = 0; i < numbers.size(); i++) {
-			System.out.printf("%-10s |   %-12s / %-12s |   %-12s / %-13s |   %-17s / %-18s    |   %-12s / %-12s \n",numbers.get(i), time1[i]+" (ns)", sqrt1[i], time2[i]+" (ns)", sqrt2[i], time3[i]+" (ns)", sqrt3[i], time4[i]+" (ns)", sqrt4[i]);
+			System.out.printf("|   %-10s |   %-12s / %-12.4f |   %-12s / %-13.4f |   %-17s / %-13.4f    |   %-12s / %-12.4f|\n",numbers.get(i), time1[i]+" (ns)", sqrt1[i], time2[i]+" (ns)", sqrt2[i], time3[i]+" (ns)", sqrt3[i], time4[i]+" (ns)", sqrt4[i]);
 		}
-		System.out.println("\n(Time / Sqrt)");
+		System.out.println("+--------------+-------------------------------+--------------------------------+----------------------------------------+------------------------------+");
 	}
 	
 	/**
@@ -82,7 +86,7 @@ public class raizCuadrada {
 		long t1, t0;
 		double t = 0;
 
-		System.out.println("Método biblioteca Math:");
+		System.out.println("Método biblioteca Math.sqrt:");
 		
 		for (int i = 0; i < numbers.size(); i++) {
 			t0 = System.nanoTime();
@@ -92,7 +96,7 @@ public class raizCuadrada {
 			t += (t1 - t0)/1e9;
 		}	
 		
-		System.out.println("Tiempo de ejecución: " + (t/numbers.size()) + " segundos");
+		System.out.println("Tiempo de ejecución total: " + (t/numbers.size()) + " segundos");
 	}
 	
 	/**
@@ -133,7 +137,7 @@ public class raizCuadrada {
 			t += (t1 - t0)/1e9;
 		}
 
-		System.out.println("Tiempo de ejecución: " + (t/numbers.size()) + " segundos");
+		System.out.println("Tiempo de ejecución total: " + (t/numbers.size()) + " segundos");
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class raizCuadrada {
 	 * @param numbers Array de números
 	 * @param time Array con los tiempos de ejecución
 	 */
-	public static void sqrtBinarySearch(ArrayList<Float> numbers, double sqrt[], long time[]) {
+	public static void sqrtBSLoop(ArrayList<Float> numbers, double sqrt[], long time[]) {
 		long t1, t0;
 		double t = 0;
 		System.out.println("\nMétodo busqueda binaria:");
@@ -155,7 +159,7 @@ public class raizCuadrada {
 			t += (t1 - t0)/1e9;
 		}
 		
-		System.out.println("Tiempo de ejecución " + (t/numbers.size()) + " segundos");
+		System.out.println("Tiempo de ejecución total: " + (t/numbers.size()) + " segundos");
 	}
 
 	/**
@@ -168,12 +172,11 @@ public class raizCuadrada {
 	public static double sqrtBinarySearch(double number, double low, double high) {
 		double currentRoot;
 		double currentApprox;
-		double aprox = 0.00001;
 		
 		currentRoot = (low+high)/2;
 		currentApprox = Math.pow(currentRoot, 2);
 		
-		if (Math.abs(currentApprox-number) < aprox) {
+		if (Math.abs(currentApprox-number) < APPROACH) {
 			return currentRoot;
 		} else if (currentApprox > number) {
 			return sqrtBinarySearch(number, low, currentRoot);
@@ -195,34 +198,54 @@ public class raizCuadrada {
 		
 		for (int i = 0; i < numbers.size(); i++) {
 			t0 = System.nanoTime();
-			sqrt[i] = root(numbers.get(i), SQUARE);
+			sqrt[i] = findRoot(numbers.get(i), numbers.get(i)/2, SQUARE);
 			t1 = System.nanoTime();
 			time[i] = t1-t0;
 			t += (t1 - t0)/1e9;
 		}
 		
-		System.out.println("Tiempo de ejecución " + (t/numbers.size()) + " segundos");
+		System.out.println("Tiempo de ejecución total: " + (t/numbers.size()) + " segundos");
 	}
 	
 	/**
-	 * 
-	 * @param w
-	 * @param g
-	 * @param n
-	 * @return
+	 *Calculas la parte del numerador del metodo Newton-Raphson
+	 * @param w Numero a calcular su raiz
+	 * @param g aproximacion
+	 * @param n grado de la raiz
+	 * @return Numerador
 	 */
     public static double f(double w, double g, int n) {
         return (Math.pow(g,n) - w);
     }
 
+    /**
+     * Calculas la parte del denominador del metodo Newton-Raphson
+     * @param g aproximacion
+     * @param n grado de la raiz
+     * @return Denominador
+     */
     public static double fPrime(double g, int n) {
         return (n * Math.pow(g, n-1));
     }
 
+    /**
+     * Devuelve un true si la aproximación es
+     * suficientemente cercana a la raíz.
+     * @param a
+     * @param b
+     * @return true o false dependiendo de la aproximación de la raiz
+     */
     public static boolean closeEnough(double a, double b) {
-        return (Math.abs(a-b) < Math.abs(b * 0.0001));
+        return (Math.abs(a-b) < Math.abs(b * APPROACH));
     }
-
+    
+    /**
+     * Encuentra la raíz de n de un numero dado 
+     * @param w Numero a calcular su raíz
+     * @param g Aproximación
+     * @param n grado de la raiz
+     * @return Devuelve la aproximación encontrada
+     */
     public static double findRoot(double w, double g, int n) {
         double newGuess = g - f(w,g,n) / fPrime(g,n);
 
@@ -230,9 +253,5 @@ public class raizCuadrada {
             return newGuess;
         else
             return findRoot(w, newGuess, n);
-    }
-
-    public static double root(double w, int n) {
-        return findRoot(w,1,n);
     }
 }
