@@ -5,61 +5,139 @@ import java.util.*;
 public class Main {
 
 	final static Scanner KEYBOARD = new Scanner(System.in);
+	static int numEopiesEmpty = 0; /* Número de eopies que no transportan ningún contenedor */
 	
+	/**
+	 * Función principal
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		int numbers[] = new int[2];
-		int totalLiters;
+		double totalLiters;
 		
 		requestNumbers(numbers);
-		totalLiters = simulateWeek(numbers[0], numbers[1]);
 		
-		System.out.println("\n\nEl número de litros totales recogidos son de: " + totalLiters + " litros");
+		System.out.println("\nNumero de eopies: " + numbers[0]);
+		System.out.print("Numero de contenedores: " + numbers[1]);
+		totalLiters = calculateLiters(numbers[0], numbers[1]);
+		
+		System.out.printf("\n\nEl número de litros totales recogidos son de: %.2f litros\n", totalLiters);
+		System.out.println("Número de eopies que no han podido transportar ningún contenedor: " + numEopiesEmpty);
 	
+		System.out.print("\n************************* Simulación 7 días *************************");
+		totalLiters = simulateWeek(numbers[0], numbers[1]);
+		System.out.printf("\nNúmero total de litros regidos en una semana: %.2f litros", totalLiters);
+		System.out.println("\nNúmero de eopies que no han podido transportar ningún contenedor: " + numEopiesEmpty);
 	}
 
-	public static int simulateWeek(int num_eopies, int num_containers) {
-		
-		int totalLiters = 0;
-		
-		//for (int i = 0; i < 7 ; i++) {
-			ArrayList<Eopie> eopies = new ArrayList<Eopie>();
-			ArrayList<Container> containers = new ArrayList<Container>();
-			
-			generateEopies(eopies, num_eopies);
-			generateContainers(containers, num_containers);
-			
-			System.out.print("eopies: ");
-			
-			Collections.sort(eopies, Comparator.comparing(Eopie::getMaxLiters));
-			
-			for (int i = 0; i < eopies.size(); i++) {
-				System.out.printf("%.2f ",eopies.get(i).getMaxLiters());
-			}
-			System.out.println("\n");
-			System.out.print("containers: ");
-			
-			Collections.sort(containers, Comparator.comparing(Container::getLiters));
-			Collections.reverse(containers);
-			for (int j = 0; j < containers.size(); j++) {
-				System.out.printf("%.2f ",containers.get(j).getLiters());
-			}
-			//totalLiters += distributeContainersToEopies1(eopies, containers);	
-		//}
+	/**
+	 * Simula una semana recogiendo litros de agua
+	 * generando cada dias nuevos contenedores y
+	 * nuevos litros soportados por cada eopie.
+	 * @param num_eopies
+	 * @param num_containers
+	 * @return
+	 */
+	public static double simulateWeek(int num_eopies, int num_containers) {
+		double totalLiters = 0;
+		numEopiesEmpty = 0;
+		for (int i = 0; i < 7; i++) {
+			totalLiters += calculateLiters(num_eopies, num_containers);
+		}
 		
 		return totalLiters;
 	}
 	
-	public static int distributeContainersToEopies1(ArrayList<Eopie> eopies, ArrayList<Container> containers) {
+	/**
+	 * Imprime información sobre los eopies y contenedores
+	 * @param eopies
+	 * @param containers
+	 */
+	public static void printInfo(ArrayList<Eopie> eopies, ArrayList<Container> containers) {
+		System.out.println("Información de los eopies: ");
+		for (int i = 0; i < eopies.size(); i++) {
+			System.out.printf("%.2f litros, ",eopies.get(i).getMaxLiters());
+		}
 		
-		int totalLiters = 0, cnt = 0;
+		System.out.println("Información de los contenedores: ");
+		for (int i = 0; i < containers.size(); i++) {
+			System.out.printf("%.2f litros, ",containers.get(i).getLiters());
+		}
+	}
+	
+	/**
+	 * Crea y ordena las listas y devuelve el total de litros recogidos
+	 * @param num_eopies
+	 * @param num_containers
+	 * @return
+	 */
+	public static double calculateLiters(int num_eopies, int num_containers) {
+		
+		double totalLiters = 0;
+
+		ArrayList<Eopie> eopies = new ArrayList<Eopie>();
+		ArrayList<Container> containers = new ArrayList<Container>();
+
+		generateEopies(eopies, num_eopies);
+		generateContainers(containers, num_containers);
+		
+		/* Reordernar los eopies de menor a mayor */
+		Collections.sort(eopies, Comparator.comparing(Eopie::getMaxLiters));
+		
+		/* Reordernar los contenedores de mayor a menor */
+		Collections.sort(containers, Comparator.comparing(Container::getLiters));
+		Collections.reverse(containers);
+		
+		printInfo(eopies, containers);
+		totalLiters = distributeContainersToEopies1(eopies, containers);	
+
+		return totalLiters;
+	}
+
+	/**
+	 * Comprueba si existe algún contenedor que el eopie pueda llevar
+	 * @param containers
+	 * @param eopie
+	 * @return
+	 */
+	public static boolean isFeasibleVolume(ArrayList<Container> containers, Eopie eopie) {
+		boolean feasible = false;
+		
+		for (int i = 0; i < containers.size(); i++) {
+			if (eopie.getMaxLiters() >= containers.get(i).getLiters()) {
+				feasible = true;
+				eopie.setLitersCarrying(containers.get(i).getLiters());
+				containers.remove(i);
+				break;
+			}
+		}
+		
+		return feasible;
+	}
+	
+	/**
+	 * Método voraz que selecciona un eopie,
+	 * y comprueba se existe algún contenedor 
+	 * que pueda transportar, si no, 
+	 * no transportará ningún contenedor
+	 * @param eopies
+	 * @param containers
+	 * @return
+	 */
+	public static double distributeContainersToEopies1(ArrayList<Eopie> eopies, ArrayList<Container> containers) {
+		double totalLiters = 0;
 		
 		while (!eopies.isEmpty()) {
-			Eopie e = eopies.get(cnt);
-			eopies.remove(cnt);
+			Eopie e = eopies.get(0);
+			eopies.remove(0);
 			
-			
-			cnt++;
+			if (isFeasibleVolume(containers, e)) {
+				totalLiters += e.getLitersCarrying();
+			} else {
+				numEopiesEmpty++;
+			}
+
 		}
 		
 		return totalLiters;

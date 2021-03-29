@@ -3,7 +3,7 @@ package P3;
 public class Eopie {
 
 	private double maxLiters;
-	private boolean isCarryingContainer;
+	private double litersCarrying;
 	
 	public Eopie(double maxLiters) {
 		this.maxLiters = maxLiters;
@@ -13,15 +13,15 @@ public class Eopie {
 		return maxLiters;
 	}
 	
-	public boolean getIsCarryingContainer() {
-		return isCarryingContainer;
+	public double getLitersCarrying() {
+		return litersCarrying;
 	}
 	
 	public void setMaxLiters(double maxLiters) {
 		this.maxLiters = maxLiters;
 	}
 	
-	public void setIsCarryingContainer(boolean isCarryingContainer) {
-		this.isCarryingContainer = isCarryingContainer;
+	public void setLitersCarrying(double litersCarrying) {
+		this.litersCarrying = litersCarrying;
 	}
 }
