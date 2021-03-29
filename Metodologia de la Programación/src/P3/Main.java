@@ -9,26 +9,60 @@ public class Main {
 	public static void main(String[] args) {
 		
 		int numbers[] = new int[2];
+		int totalLiters;
 		
 		requestNumbers(numbers);
-		simulateWeek(numbers[0], numbers[1]);
+		totalLiters = simulateWeek(numbers[0], numbers[1]);
+		
+		System.out.println("\n\nEl número de litros totales recogidos son de: " + totalLiters + " litros");
+	
 	}
 
-	public static void simulateWeek(int num_eopies, int num_containers) {
+	public static int simulateWeek(int num_eopies, int num_containers) {
 		
-		for (int i = 0; i < 7 ; i++) {
+		int totalLiters = 0;
+		
+		//for (int i = 0; i < 7 ; i++) {
 			ArrayList<Eopie> eopies = new ArrayList<Eopie>();
 			ArrayList<Container> containers = new ArrayList<Container>();
 			
 			generateEopies(eopies, num_eopies);
 			generateContainers(containers, num_containers);
 			
-			distributeContainersToEopies(eopies, containers);
-		}
+			System.out.print("eopies: ");
+			
+			Collections.sort(eopies, Comparator.comparing(Eopie::getMaxLiters));
+			
+			for (int i = 0; i < eopies.size(); i++) {
+				System.out.printf("%.2f ",eopies.get(i).getMaxLiters());
+			}
+			System.out.println("\n");
+			System.out.print("containers: ");
+			
+			Collections.sort(containers, Comparator.comparing(Container::getLiters));
+			Collections.reverse(containers);
+			for (int j = 0; j < containers.size(); j++) {
+				System.out.printf("%.2f ",containers.get(j).getLiters());
+			}
+			//totalLiters += distributeContainersToEopies1(eopies, containers);	
+		//}
+		
+		return totalLiters;
 	}
 	
-	public static void distributeContainersToEopies(ArrayList<Eopie> eopies, ArrayList<Container> containers) {
+	public static int distributeContainersToEopies1(ArrayList<Eopie> eopies, ArrayList<Container> containers) {
 		
+		int totalLiters = 0, cnt = 0;
+		
+		while (!eopies.isEmpty()) {
+			Eopie e = eopies.get(cnt);
+			eopies.remove(cnt);
+			
+			
+			cnt++;
+		}
+		
+		return totalLiters;
 	}
 	
 	/**
