@@ -27,7 +27,7 @@ public class Main {
 	
 		System.out.print("\n************************* Simulación 7 días *************************");
 		totalLiters = simulateWeek(numbers[0], numbers[1]);
-		System.out.printf("\nNúmero total de litros regidos en una semana: %.2f litros", totalLiters);
+		System.out.printf("\n\nNúmero total de litros regidos en una semana: %.2f litros", totalLiters);
 		System.out.println("\nNúmero de eopies que no han podido transportar ningún contenedor: " + numEopiesEmpty);
 	}
 
@@ -55,12 +55,12 @@ public class Main {
 	 * @param containers
 	 */
 	public static void printInfo(ArrayList<Eopie> eopies, ArrayList<Container> containers) {
-		System.out.println("Información de los eopies: ");
+		System.out.println("\nInformación de los eopies: ");
 		for (int i = 0; i < eopies.size(); i++) {
 			System.out.printf("%.2f litros, ",eopies.get(i).getMaxLiters());
 		}
 		
-		System.out.println("Información de los contenedores: ");
+		System.out.println("\nInformación de los contenedores: ");
 		for (int i = 0; i < containers.size(); i++) {
 			System.out.printf("%.2f litros, ",containers.get(i).getLiters());
 		}
