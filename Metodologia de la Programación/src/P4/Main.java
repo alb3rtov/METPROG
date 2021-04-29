@@ -18,11 +18,12 @@ import java.util.Arrays;
 public class Main {
 
 	final static int NUMBERS = 6;
+	final static int LOWER_LIMIT_TARGET_NUMBER = 100;
+	final static int UPPER_LIMIT_TARGET_NUMBER = 1000;
 	final static Scanner KEYBOARD = new Scanner(System.in);
 	
 	/**
-	 * Función main que crea las listas de números
-	 * y llama al resto de funciones del programa
+	 * Función main que crea las listas de números y llama al resto de funciones del programa
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -38,8 +39,17 @@ public class Main {
 		int numBigNumbers = requestBigNumbers();
 		int numSmallNumbers = selectSmallNumbers(numBigNumbers);
 
-		ArrayList<Integer> list = Generator.generateNumbersList(numBigNumbers, numSmallNumbers, bigNumbers, smallNumbers);
-		Solver.solve(list);
+		int[] list= Generator.generateNumbersList(numBigNumbers, numSmallNumbers, bigNumbers, smallNumbers);
+		
+		Solver solver = new Solver();
+		solver.solve(list, Generator.generateRandomNumber(LOWER_LIMIT_TARGET_NUMBER, UPPER_LIMIT_TARGET_NUMBER));
+	
+		if (solver.getSolutionCount() > 0) {
+            System.out.println("\nSolución: " + solver.getSolution());
+        }
+        else {
+            System.out.println("No se ha encontrado ninguna solución posible.");
+        }
 	}
 	
 	/**

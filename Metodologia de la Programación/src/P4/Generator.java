@@ -13,7 +13,6 @@ package P4;
 import java.util.ArrayList;
 
 public class Generator {
-
 	/**
 	 * Genera la lista con los números a utilizar y el número objetivo a calcular.
 	 * @param numBigNumbers
@@ -22,21 +21,20 @@ public class Generator {
 	 * @param smallNumbers
 	 * @return
 	 */
-	public static ArrayList<Integer> generateNumbersList(int numBigNumbers, int numSmallNumbers, ArrayList<Integer> bigNumbers, ArrayList<Integer> smallNumbers) {
-		ArrayList<Integer> list = new ArrayList<Integer>();
+	public static int[] generateNumbersList(int numBigNumbers, int numSmallNumbers, ArrayList<Integer> bigNumbers, ArrayList<Integer> smallNumbers) {
+		int[] list = new int[numBigNumbers+numSmallNumbers];
+		int i = 0;
 		
-		for (int i = 0; i < numBigNumbers; i++) {
-			int numberPos = generateRandomNumber(bigNumbers.size()-1, 0);
-			list.add(bigNumbers.remove(numberPos));
+		for (i = 0; i < numBigNumbers; i++) {
+			int numberPos = generateRandomNumber(0, bigNumbers.size());
+			list[i] = bigNumbers.remove(numberPos);
 		}
 		
-		for (int i = 0; i < numSmallNumbers; i++) {
-			int numberPos = generateRandomNumber(smallNumbers.size()-1, 0);
-			list.add(smallNumbers.remove(numberPos));
+		for (int j = i; j < numBigNumbers+numSmallNumbers; j++) {
+			int numberPos = generateRandomNumber(0, smallNumbers.size());
+			list[j] = smallNumbers.remove(numberPos);
 		}
-		
-		list.add(generateRandomNumber(999, 101)); //El último elemento de la lista es el número objetivo
-		
+
 		return list;
 	}
 	
@@ -46,8 +44,7 @@ public class Generator {
 	 * @param min
 	 * @return número random
 	 */
-	public static int generateRandomNumber(int max, int min) {
+	public static int generateRandomNumber(int min, int max) {
 		return (int) ((Math.random() * (max - min)) + min);
 	}
-	
 }
