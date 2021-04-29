@@ -1,3 +1,13 @@
+/*********************************************************
+ * 
+ * Class Name: Main.java
+ * Clase que inicia el programa creando la listas y llamando
+ * a las funciones de otras clases para ejecutar el programa.
+ * 
+ * @author Alberto Vázquez Martínez y Ángel Villafranca Iniesta
+ * 
+ *********************************************************/
+
 package P3;
 
 import java.util.*;
@@ -6,9 +16,9 @@ public class Main {
 
 	final static Scanner KEYBOARD = new Scanner(System.in);
 	static int numEopiesEmpty = 0; /* Número de eopies que no transportan ningún contenedor */
-	
+
 	/**
-	 * Función principal
+	 * Función principal que solicita datos y genera eopies y containers para los dos primeros algoritmos.
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -18,14 +28,30 @@ public class Main {
 		
 		requestNumbers(numbers);
 		
+		ArrayList<Eopie> eopies = new ArrayList<Eopie>();
+		ArrayList<Container> containers = new ArrayList<Container>();
+		
+		generateEopies(eopies, numbers[0]);
+		generateContainers(containers, numbers[1]);
+		
+		ArrayList<Eopie> eopiesCopy = (ArrayList<Eopie>) eopies.clone();
+		ArrayList<Container> containersCopy = (ArrayList<Container>) containers.clone();
+		
 		System.out.println("\nNumero de eopies: " + numbers[0]);
 		System.out.print("Numero de contenedores: " + numbers[1]);
-		totalLiters = calculateLiters(numbers[0], numbers[1]);
 		
-		System.out.printf("\n\nEl número de litros totales recogidos son de: %.2f litros\n", totalLiters);
+		System.out.println("\n\n***************** Algoritmo más eficiente *****************");
+		totalLiters = calculateLiters(eopies, containers, numbers[0], numbers[1], true);
+		System.out.printf("\nEl número de litros totales recogidos son de: %.2f litros\n", totalLiters);
 		System.out.println("Número de eopies que no han podido transportar ningún contenedor: " + numEopiesEmpty);
-	
-		System.out.print("\n************************* Simulación 7 días *************************");
+		numEopiesEmpty = 0;
+		
+		System.out.println("\n\n***************** Otro algoritmo menos eficiente (sin ordenación) *****************");
+		totalLiters = calculateLiters(eopiesCopy, containersCopy, numbers[0], numbers[1], false);
+		System.out.printf("\nEl número de litros totales recogidos son de: %.2f litros\n", totalLiters);
+		System.out.println("Número de eopies que no han podido transportar ningún contenedor: " + numEopiesEmpty);
+		
+		System.out.print("\n\n************************* Simulación 7 días *************************\n");
 		totalLiters = simulateWeek(numbers[0], numbers[1]);
 		System.out.printf("\n\nNúmero total de litros regidos en una semana: %.2f litros", totalLiters);
 		System.out.println("\nNúmero de eopies que no han podido transportar ningún contenedor: " + numEopiesEmpty);
@@ -42,10 +68,40 @@ public class Main {
 	public static double simulateWeek(int num_eopies, int num_containers) {
 		double totalLiters = 0;
 		numEopiesEmpty = 0;
+		
 		for (int i = 0; i < 7; i++) {
-			totalLiters += calculateLiters(num_eopies, num_containers);
+			ArrayList<Eopie> eopies = new ArrayList<Eopie>();
+			ArrayList<Container> containers = new ArrayList<Container>();
+			
+			generateEopies(eopies, num_eopies);
+			generateContainers(containers, num_containers);
+			
+			totalLiters += calculateLiters(eopies, containers, num_eopies, num_containers, true);
+		}
+		return totalLiters;
+	}
+	
+	/**
+	 * Crea y ordena las listas y devuelve el total de litros recogidos
+	 * @param num_eopies
+	 * @param num_containers
+	 * @return
+	 */
+	public static double calculateLiters(ArrayList<Eopie> eopies, ArrayList<Container> containers, int num_eopies, int num_containers, boolean best) {
+		double totalLiters = 0;
+
+		if (best == true) {
+			/* Reordernar los eopies de menor a mayor */
+			Collections.sort(eopies, Comparator.comparing(Eopie::getMaxLiters));
+			
+			/* Reordernar los contenedores de mayor a menor */
+			Collections.sort(containers, Comparator.comparing(Container::getLiters));
+			Collections.reverse(containers);
 		}
 		
+		printInfo(eopies, containers);
+		totalLiters = distributeContainersToEopies(eopies, containers);	
+
 		return totalLiters;
 	}
 	
@@ -64,35 +120,6 @@ public class Main {
 		for (int i = 0; i < containers.size(); i++) {
 			System.out.printf("%.2f litros, ",containers.get(i).getLiters());
 		}
-	}
-	
-	/**
-	 * Crea y ordena las listas y devuelve el total de litros recogidos
-	 * @param num_eopies
-	 * @param num_containers
-	 * @return
-	 */
-	public static double calculateLiters(int num_eopies, int num_containers) {
-		
-		double totalLiters = 0;
-
-		ArrayList<Eopie> eopies = new ArrayList<Eopie>();
-		ArrayList<Container> containers = new ArrayList<Container>();
-
-		generateEopies(eopies, num_eopies);
-		generateContainers(containers, num_containers);
-		
-		/* Reordernar los eopies de menor a mayor */
-		Collections.sort(eopies, Comparator.comparing(Eopie::getMaxLiters));
-		
-		/* Reordernar los contenedores de mayor a menor */
-		Collections.sort(containers, Comparator.comparing(Container::getLiters));
-		Collections.reverse(containers);
-		
-		printInfo(eopies, containers);
-		totalLiters = distributeContainersToEopies1(eopies, containers);	
-
-		return totalLiters;
 	}
 
 	/**
@@ -125,7 +152,7 @@ public class Main {
 	 * @param containers
 	 * @return
 	 */
-	public static double distributeContainersToEopies1(ArrayList<Eopie> eopies, ArrayList<Container> containers) {
+	public static double distributeContainersToEopies(ArrayList<Eopie> eopies, ArrayList<Container> containers) {
 		double totalLiters = 0;
 		
 		while (!eopies.isEmpty()) {
@@ -137,7 +164,6 @@ public class Main {
 			} else {
 				numEopiesEmpty++;
 			}
-
 		}
 		
 		return totalLiters;
