@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class Main {
 
 	final static int NUMBERS = 6;
-	final static int LOWER_LIMIT_TARGET_NUMBER = 100;
+	final static int LOWER_LIMIT_TARGET_NUMBER = 500;// 100
 	final static int UPPER_LIMIT_TARGET_NUMBER = 1000;
 	final static Scanner KEYBOARD = new Scanner(System.in);
 	
@@ -43,9 +43,15 @@ public class Main {
 		
 		Solver solver = new Solver();
 		solver.solve(list, Generator.generateRandomNumber(LOWER_LIMIT_TARGET_NUMBER, UPPER_LIMIT_TARGET_NUMBER));
-	
+		//int[] lista = {25,100,9,10,10,3};
+		//solver.solve(lista, 459);
+		
 		if (solver.getSolutionCount() > 0) {
-            System.out.println("\nSolución: " + solver.getSolution());
+			System.out.println("\nSe han encontrado " + solver.getSolutionCount() + " soluciones posibles");
+			System.out.println("Las mejores soluciones son: \n");
+			for (int i = 0; i < solver.getBestSolutionCount(); i++) {
+				System.out.println("Solución " + (i+1) + ": " + solver.getSolutions().get(i));
+			}
         }
         else {
             System.out.println("No se ha encontrado ninguna solución posible.");

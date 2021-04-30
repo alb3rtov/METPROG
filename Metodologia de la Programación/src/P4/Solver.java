@@ -9,13 +9,17 @@
 
 package P4;
 
+import java.util.ArrayList;
+
 public class Solver {
     
     private int targetNumber = 0;
     private int[] numbers = new int[0];
     private int solutionCount = 0;
-    private String solution = null;
-   
+    private int bestSolutionsCount = 0;
+    private ArrayList<String> solutions = new ArrayList<String>();
+    private int amountOfNumbersBestSolution = 999;
+    
     /* A cada operación se le asigna un valor númerico */
 	public static final byte NOOP = 0;
     public static final byte ADD = 1;
@@ -24,9 +28,7 @@ public class Solver {
     public static final byte DIVIDE = 4;
     
     /* Constructor de la clase */
-    public Solver() {
-    	
-    }
+    public Solver() {}
     
     /**
      * Asigna los numeros base y el número objetivo a 
@@ -39,7 +41,7 @@ public class Solver {
     	this.targetNumber = targetNumber;
         this.numbers = numbers;
         this.solutionCount = 0;
-        this.solution = null;
+        this.bestSolutionsCount = 0;
         
         System.out.print("Números base: ");
         for (int i = 0; i < this.numbers.length; i++) {
@@ -48,7 +50,7 @@ public class Solver {
         
         System.out.println("\nNúmero objetivo: " + this.targetNumber);
         
-        findSubsets(this.numbers, new boolean[this.numbers.length]);
+        combineAllNumbers(this.numbers, new boolean[this.numbers.length]);
     }
     
     /**
@@ -56,11 +58,11 @@ public class Solver {
      * So find all subsets of the numbers we have been given, before then
      * using the permutate method to find all permutations of these.
      */
-    private void findSubsets(int[] numbers, boolean[] members) {
-        for (int setNum = 0; setNum < Math.pow(2, numbers.length); setNum++) {
+    private void combineAllNumbers(int[] numbers, boolean[] members) {
+        for (int i = 0; i < Math.pow(2, numbers.length); i++) {
             int size = 0;
-            for (int i = 0; i < numbers.length; i++) {
-                if (members[i]) {
+            for (int j = 0; j < numbers.length; j++) {
+                if (members[j]) {
                     size++;
                 }
             }
@@ -68,9 +70,9 @@ public class Solver {
             
             // fill the array
             int pos = 0;
-            for (int i = 0; i < numbers.length; i++) {
-                if (members[i]) {
-                    playset[pos] = numbers[i];
+            for (int j = 0; j < numbers.length; j++) {
+                if (members[j]) {
+                    playset[pos] = numbers[j];
                     pos++;
                 }
             }
@@ -80,13 +82,13 @@ public class Solver {
             }
             
             // jibble the bits to the next bit pattern
-            int i = numbers.length - 1;
-            while (i >= 0 && members[i]) {
-                members[i] = false;
-                i--;
+            int k = numbers.length - 1;
+            while (k >= 0 && members[k]) {
+                members[k] = false;
+                k--;
             }
-            if (i >= 0) {
-                members[i] = true;
+            if (k >= 0) {
+                members[k] = true;
             }
         }
     }
@@ -98,6 +100,7 @@ public class Solver {
      * @param n
      */
     private void generateResults(int[] numbers, int n) {
+    	/* Caso base */
         if (n == numbers.length) {
             operate(numbers, new byte[numbers.length - 1], 0);
         }
@@ -106,8 +109,7 @@ public class Solver {
                 int temp = numbers[i];
                 numbers[i] = numbers[n];
                 numbers[n] = temp;
-                generateResults((int[])numbers.clone(), n + 1);
-                
+                generateResults((int[])numbers.clone(), n + 1);       
             }
         }
     }
@@ -136,7 +138,6 @@ public class Solver {
                         break;
                     case DIVIDE:
                         if (total % numbers[i] != 0) {
-                            // Can't allow non-integer divisions in this game!
                             return;
                         }
                         total /= numbers[i]; 
@@ -145,39 +146,41 @@ public class Solver {
             }
 
             if (total == this.targetNumber) {
-                this.solutionCount++;
-                if (this.solution == null) {
-                    StringBuffer solution = new StringBuffer();
-                    byte lastOp = NOOP;
-                    for (int i = 0; i < numbers.length - 1; i++) {
-                        solution.append(numbers[i]);
-                        if (lastOp != NOOP && operands[i] >= 3 && lastOp <= 2) {
-                            solution.append(")");
-                            solution.insert(0, "(");
-                        }
-                        lastOp = operands[i];
-                        switch (operands[i]) {
-                            case ADD:
-                                solution.append(" + ");
-                                break;
-                            case SUBTRACT:
-                                solution.append(" - ");
-                                break;
-                            case MULTIPLY:
-                                solution.append("*");
-                                break;
-                            case DIVIDE:
-                                solution.append("/");
-                                break;
-                        }
-                    }
-                    solution.append(numbers[numbers.length - 1]);
-                    this.solution = solution.toString();
-                }
+        		this.solutionCount++;
+            	if (amountOfNumbersBestSolution >= numbers.length) {
+            		this.bestSolutionsCount++;
+            		this.amountOfNumbersBestSolution = numbers.length;
+            		StringBuffer solution = new StringBuffer();
+            		byte lastOp = NOOP;
+            		for (int i = 0; i < numbers.length - 1; i++) {
+            			solution.append(numbers[i]);
+            			if (lastOp != NOOP && operands[i] >= 3 && lastOp <= 2) {
+            				solution.append(")");
+            				solution.insert(0, "(");
+            			}
+            			lastOp = operands[i];
+            			switch (operands[i]) {
+            			case ADD:
+            				solution.append(" + ");
+            				break;
+            			case SUBTRACT:
+            				solution.append(" - ");
+            				break;
+            			case MULTIPLY:
+            				solution.append("*");
+            				break;
+            			case DIVIDE:
+            				solution.append("/");
+            				break;
+            			}
+            		}
+            		solution.append(numbers[numbers.length - 1]);
+            		this.solutions.add(solution.toString());
+            	}
             }
         }
         else {
-            if (pos == 0) {
+        	if (pos == 0) {
                 operate(numbers, operands, ++pos);
             }
             else {
@@ -208,112 +211,11 @@ public class Solver {
         return this.solutionCount;
     }
     
-    public String getSolution() {
-        return this.solution;
-    }    
+    public int getBestSolutionCount() {
+        return this.bestSolutionsCount;
+    }
+       
+    public ArrayList<String> getSolutions() {
+    	return this.solutions;
+    }
 }
-
-/*
-public class Solver {
-
-	public static void solve(ArrayList<Integer> list) {
-		ArrayList<Operation> solutionsList = new ArrayList<Operation>();		
-		
-		System.out.print("Lista de números: ");
-		int targetNumber = list.remove(list.size()-1); //El último elemento de la lista es el número objetivo.
-		
-		//for (int i = 0; i < list.size(); i++) {
-		//	System.out.print(list.get(i) + " ");
-		//}
-		
-		//System.out.println("\nNúmero objetivo: " + targetNumber);
-		
-		
-		List<Integer> listNumbers = Arrays.asList(25,100,9,10,10,3);
-		ArrayList<Integer> lista =  new ArrayList<Integer>();		
-		lista.addAll(listNumbers);
-		targetNumber = 459;
-		System.out.println(lista);
-		System.out.println("\nNúmero objetivo: " + targetNumber);
-		
-		generateAllSolutions(lista, solutionsList, 0, targetNumber);
-		printResults();
-		
-	}
-	
-	public static boolean isSolution() {
-		boolean solution = false;
-		
-		return solution;
-	}
-	
-	public static void addSolution(ArrayList<Operation>solutionsList) {
-		
-	}
-	
-	public static boolean isFeasible() {
-		boolean feasible = false;
-		
-		return feasible;
-	}
-	
-	public static void generateAllSolutions(ArrayList<Integer> list, ArrayList<Operation> solutionsList, int currentResult, int targetNumber) {
-		
-		int recursiveCalls = 0;
-		ArrayList<Integer> partialSolutions = new ArrayList<Integer>();
-		
-		if (currentResult == targetNumber) {
-
-			for (int i = 0; i < solutionsList.size(); i++) {
-				System.out.print(solutionsList.get(i).toString());
-			}
-
-		} else {
-			for (int i = 0; i < list.size(); i++) {
-				for (int j = 0; j < list.size(); j++) {
-					if (i != j) {
-						currentResult += list.get(i) + list.get(j);
-						if (currentResult <= targetNumber) {
-							Operation operation = new Operation(1,2,"+");
-							solutionsList.add(operation);
-							generateAllSolutions(list, solutionsList, currentResult, targetNumber);
-							solutionsList.remove(solutionsList.size()-1);
-						}
-						currentResult -= list.get(i) + list.get(j);
-						//if (list.get(i) >= list.get(j)) {
-							//recursiveCalls++;
-							//partialSolutions.add(list.get(i)-list.get(j));
-						//	System.out.println("Resta de " + list.get(i) + " y " + list.get(j) + " = " + (list.get(i) - list.get(j)));
-						//} 
-						
-						//if (list.get(i) % list.get(j) == 0) {
-							//recursiveCalls++;
-							//partialSolutions.add(list.get(i)/list.get(j));
-						//	System.out.println("División de " + list.get(i) + " y " + list.get(j) + " = " + (list.get(i) / list.get(j)));
-						//}
-							
-						//if (list.get(i) <= list.get(j)) {
-							//recursiveCalls+=2;
-							//partialSolutions.add(list.get(i)+list.get(j));
-							//partialSolutions.add(list.get(i)*list.get(j));
-						//	System.out.println("Suma de " + list.get(i) + " y " + list.get(j) + " = " + (list.get(i) + list.get(j)));
-						//	System.out.println("Multiplicación de " + list.get(i) + " y " + list.get(j) + " = " + (list.get(i) * list.get(j)));
-						//}
-						
-						//for (int k = 0; k < recursiveCalls; k++) {
-						//	generateAllSolutions(list, solutionsList, currentResult, targetNumber);
-						//}
-						
-						
-					}
-				}
-				//System.out.println("\nSiguiente");
-			}
-		}
-		
-	}
-	
-	public static void printResults() {
-		
-	}
-}*/
