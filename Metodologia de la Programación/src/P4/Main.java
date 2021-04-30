@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.List;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 
 public class Main {
 
@@ -63,11 +64,17 @@ public class Main {
 	 * @return
 	 */
 	public static int requestBigNumbers() {
-		int value;
+		int value = -1;
 		
 		do {
-			System.out.println("Introduzca el número de numeros grandes a seleccionar (0-4): ");
-			value = KEYBOARD.nextInt();
+			try {
+				System.out.println("Introduzca el número de numeros grandes a seleccionar (0-4): ");
+				value = KEYBOARD.nextInt();
+			} catch (InputMismatchException e) {
+				System.out.println("Error leyendo entero.");
+				KEYBOARD.next();
+			}
+			
 		} while (value < 0 || value > 4);
 		
 		return value;

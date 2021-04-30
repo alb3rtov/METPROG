@@ -54,9 +54,10 @@ public class Solver {
     }
     
     /**
-     * When solving the puzzle, we do not have to use all of the numbers.
-     * So find all subsets of the numbers we have been given, before then
-     * using the permutate method to find all permutations of these.
+     * Encuentra todas las combinaciones de números posibles
+     * del conjunto de número generado aleatoriamente
+     * @param numbers
+     * @param members
      */
     private void combineAllNumbers(int[] numbers, boolean[] members) {
         for (int i = 0; i < Math.pow(2, numbers.length); i++) {
@@ -94,8 +95,8 @@ public class Solver {
     }
     
     /**
-     * Encuentra todas las combinaciones de los numeros y por cada
-     * una de las combinaciones realiza 4 operaciones.
+     * Algoritmo backtracking que genera los resultados factibles
+     * operando los numeros con las 4 operaciones aritmeticas.
      * @param numbers
      * @param n
      */
@@ -115,11 +116,44 @@ public class Solver {
     }
     
     /**
+     * Comprueba si en el array de soluciones existen soluciones con
+     * mas operadores/operandos que la nueva solución encontrada. Si existen, las elimina.
+     * @param numberOfCurrentOperators
+     */
+    private void checkPreviousSolutions(int numberOfCurrentOperators) {
+    	int counter = 0;
+    	for (int i = 0; i < solutions.size()-1; i++) {
+    		for (int j = 0; j < solutions.get(i).length(); j++ ) {
+    			if (solutions.get(i).charAt(j) == '+' || 
+    				solutions.get(i).charAt(j) == '*' ||
+    				solutions.get(i).charAt(j) == '-' ||
+    				solutions.get(i).charAt(j) == '/') {
+    				counter++;
+    			}
+    		}
+    		
+    		if (counter > numberOfCurrentOperators) {
+    			solutions.remove(i);
+    			bestSolutionsCount--;
+    		}
+    		counter = 0;
+    	}
+    }
+    
+    /**
      * Take a permutation of numbers and try all mathematical combinations.
      * Division is not allowed if there is a non-integral result.
      * If the target is found, then the solution is printed to the standard
      * output, using as few brackets as possible.
      * (recursive)
+     */
+    
+    /**
+     * Método recursivo que realiza las operaciones entre los números y 
+     * genera los strings de soluciones válidas.
+     * @param numbers
+     * @param operands
+     * @param pos
      */
     private void operate(int[] numbers, byte[] operands, int pos) {
         if (pos == numbers.length) {
@@ -147,9 +181,13 @@ public class Solver {
 
             if (total == this.targetNumber) {
         		this.solutionCount++;
-            	if (amountOfNumbersBestSolution >= numbers.length) {
+            	if (this.amountOfNumbersBestSolution >= numbers.length) { /* Comprobar si hay más operandos en la operación anterior */
+            		
+            		checkPreviousSolutions(numbers.length-1);
+            		
             		this.bestSolutionsCount++;
             		this.amountOfNumbersBestSolution = numbers.length;
+            		
             		StringBuffer solution = new StringBuffer();
             		byte lastOp = NOOP;
             		for (int i = 0; i < numbers.length - 1; i++) {
