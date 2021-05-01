@@ -19,7 +19,7 @@ import java.util.InputMismatchException;
 public class Main {
 
 	final static int NUMBERS = 6;
-	final static int LOWER_LIMIT_TARGET_NUMBER = 500;// 100
+	final static int LOWER_LIMIT_TARGET_NUMBER = 100;
 	final static int UPPER_LIMIT_TARGET_NUMBER = 1000;
 	final static Scanner KEYBOARD = new Scanner(System.in);
 	
@@ -42,14 +42,12 @@ public class Main {
 
 		int[] list= Generator.generateNumbersList(numBigNumbers, numSmallNumbers, bigNumbers, smallNumbers);
 		
-		Solver solver = new Solver();
-		solver.solve(list, Generator.generateRandomNumber(LOWER_LIMIT_TARGET_NUMBER, UPPER_LIMIT_TARGET_NUMBER));
-		//int[] lista = {25,100,9,10,10,3};
-		//solver.solve(lista, 459);
+		Solver solver = new Solver(list, Generator.generateRandomNumber(LOWER_LIMIT_TARGET_NUMBER, UPPER_LIMIT_TARGET_NUMBER));
+		solver.solve();
 		
 		if (solver.getSolutionCount() > 0) {
 			System.out.println("\nSe han encontrado " + solver.getSolutionCount() + " soluciones posibles");
-			System.out.println("Las mejores soluciones son: \n");
+			System.out.println("\nLas mejores soluciones son:");
 			for (int i = 0; i < solver.getBestSolutionCount(); i++) {
 				System.out.println("Solución " + (i+1) + ": " + solver.getSolutions().get(i));
 			}

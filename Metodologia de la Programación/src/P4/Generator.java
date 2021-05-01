@@ -26,12 +26,12 @@ public class Generator {
 		int i = 0;
 		
 		for (i = 0; i < numBigNumbers; i++) {
-			int numberPos = generateRandomNumber(0, bigNumbers.size());
+			int numberPos = generateRandomNumber(-1, bigNumbers.size());
 			list[i] = bigNumbers.remove(numberPos);
 		}
 		
 		for (int j = i; j < numBigNumbers+numSmallNumbers; j++) {
-			int numberPos = generateRandomNumber(0, smallNumbers.size());
+			int numberPos = generateRandomNumber(-1, smallNumbers.size());
 			list[j] = smallNumbers.remove(numberPos);
 		}
 

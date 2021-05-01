@@ -1,8 +1,8 @@
 /*********************************************************
  * 
  * Class Name: Solver.java
- * Clase que se encarga de generar todas las soluciones todas posibles
- * del problema e imprimirlas por pantalla.
+ * Clase que se encarga de generar todas las soluciones 
+ * todas posibles del problema y solo quedarse con las mejores
  * @author Alberto Vázquez Martínez y Ángel Villafranca Iniesta
  * 
  *********************************************************/
@@ -13,22 +13,32 @@ import java.util.ArrayList;
 
 public class Solver {
     
+	/* Atributos de la clase */
     private int targetNumber = 0;
     private int[] numbers = new int[0];
-    private int solutionCount = 0;
+    private int solutionsCount = 0;
     private int bestSolutionsCount = 0;
     private ArrayList<String> solutions = new ArrayList<String>();
     private int amountOfNumbersBestSolution = 999;
     
     /* A cada operación se le asigna un valor númerico */
-	public static final byte NOOP = 0;
-    public static final byte ADD = 1;
-    public static final byte SUBTRACT = 2;
-    public static final byte MULTIPLY = 3;
-    public static final byte DIVIDE = 4;
+    public static final byte SUM = 1;
+    public static final byte SUBTRACTION = 2;
+    public static final byte MULTIPLICATION = 3;
+    public static final byte DIVISION = 4;
+	public static final byte NO_OPERATION = 0;
+	
+	/* Signo de los diferentes operadores */
+    public static final String CR_SUM =  " + ";
+    public static final String CR_SUBTRACTION =  " - ";
+    public static final String CR_MULTIPLICATION =  " * ";
+    public static final String CR_DIVISION =  " / ";
     
     /* Constructor de la clase */
-    public Solver() {}
+    public Solver(int[] numbers, int targetNumber) {
+    	this.targetNumber = targetNumber;
+        this.numbers = numbers;
+    }
     
     /**
      * Asigna los numeros base y el número objetivo a 
@@ -36,21 +46,15 @@ public class Solver {
      * @param numbers
      * @param targetNumber
      */
-    public void solve(int[] numbers, int targetNumber) {
-        
-    	this.targetNumber = targetNumber;
-        this.numbers = numbers;
-        this.solutionCount = 0;
-        this.bestSolutionsCount = 0;
-        
+    public void solve() {
+
         System.out.print("Números base: ");
         for (int i = 0; i < this.numbers.length; i++) {
 			System.out.print(this.numbers[i] + " ");
 		}
         
-        System.out.println("\nNúmero objetivo: " + this.targetNumber);
-        
-        combineAllNumbers(this.numbers, new boolean[this.numbers.length]);
+        System.out.println("\nNúmero objetivo: " + this.targetNumber);  
+        combineAllCombinations(this.numbers, new boolean[this.numbers.length]);
     }
     
     /**
@@ -59,7 +63,7 @@ public class Solver {
      * @param numbers
      * @param members
      */
-    private void combineAllNumbers(int[] numbers, boolean[] members) {
+    private void combineAllCombinations(int[] numbers, boolean[] members) {
         for (int i = 0; i < Math.pow(2, numbers.length); i++) {
             int size = 0;
             for (int j = 0; j < numbers.length; j++) {
@@ -69,7 +73,7 @@ public class Solver {
             }
             int[] playset = new int[size];
             
-            // fill the array
+            // Generar el array de combinaciones en cada iteración
             int pos = 0;
             for (int j = 0; j < numbers.length; j++) {
                 if (members[j]) {
@@ -82,7 +86,6 @@ public class Solver {
             	generateResults(playset, 0);
             }
             
-            // jibble the bits to the next bit pattern
             int k = numbers.length - 1;
             while (k >= 0 && members[k]) {
                 members[k] = false;
@@ -95,17 +98,14 @@ public class Solver {
     }
     
     /**
-     * Algoritmo backtracking que genera los resultados factibles
-     * operando los numeros con las 4 operaciones aritmeticas.
+     * Genera los resultados factibles, operando los numeros con las 4 operaciones aritmeticas.
      * @param numbers
      * @param n
      */
     private void generateResults(int[] numbers, int n) {
-    	/* Caso base */
-        if (n == numbers.length) {
+        if (n == numbers.length) {  /* Caso base */
             operate(numbers, new byte[numbers.length - 1], 0);
-        }
-        else {
+        } else {
             for (int i = n; i < numbers.length; i++) {
                 int temp = numbers[i];
                 numbers[i] = numbers[n];
@@ -124,10 +124,10 @@ public class Solver {
     	int counter = 0;
     	for (int i = 0; i < solutions.size()-1; i++) {
     		for (int j = 0; j < solutions.get(i).length(); j++ ) {
-    			if (solutions.get(i).charAt(j) == '+' || 
-    				solutions.get(i).charAt(j) == '*' ||
-    				solutions.get(i).charAt(j) == '-' ||
-    				solutions.get(i).charAt(j) == '/') {
+    			if (solutions.get(i).charAt(j) == CR_SUM.charAt(1) || 
+    				solutions.get(i).charAt(j) == CR_SUBTRACTION.charAt(1) ||
+    				solutions.get(i).charAt(j) == CR_MULTIPLICATION.charAt(1) ||
+    				solutions.get(i).charAt(j) == CR_DIVISION.charAt(1)) {
     				counter++;
     			}
     		}
@@ -141,15 +141,7 @@ public class Solver {
     }
     
     /**
-     * Take a permutation of numbers and try all mathematical combinations.
-     * Division is not allowed if there is a non-integral result.
-     * If the target is found, then the solution is printed to the standard
-     * output, using as few brackets as possible.
-     * (recursive)
-     */
-    
-    /**
-     * Método recursivo que realiza las operaciones entre los números y 
+     * Realiza las operaciones entre los números y 
      * genera los strings de soluciones válidas.
      * @param numbers
      * @param operands
@@ -157,20 +149,19 @@ public class Solver {
      */
     private void operate(int[] numbers, byte[] operands, int pos) {
         if (pos == numbers.length) {
-            // calculate the answer
             int total = numbers[0];
             for (int i = 1; i < numbers.length; i++) {
                 switch (operands[i - 1]) {
-                    case ADD:
+                    case SUM:
                         total += numbers[i];
                         break;
-                    case SUBTRACT:
+                    case SUBTRACTION:
                         total -= numbers[i];
                         break;
-                    case MULTIPLY:
+                    case MULTIPLICATION:
                         total *= numbers[i];
                         break;
-                    case DIVIDE:
+                    case DIVISION:
                         if (total % numbers[i] != 0) {
                             return;
                         }
@@ -179,8 +170,8 @@ public class Solver {
                 }
             }
 
-            if (total == this.targetNumber) {
-        		this.solutionCount++;
+            if (total == this.targetNumber) { /* Comprobar si es igual al número objetivo */
+        		this.solutionsCount++;
             	if (this.amountOfNumbersBestSolution >= numbers.length) { /* Comprobar si hay más operandos en la operación anterior */
             		
             		checkPreviousSolutions(numbers.length-1);
@@ -188,51 +179,49 @@ public class Solver {
             		this.bestSolutionsCount++;
             		this.amountOfNumbersBestSolution = numbers.length;
             		
-            		StringBuffer solution = new StringBuffer();
-            		byte lastOp = NOOP;
+            		StringBuffer foundSolution = new StringBuffer();
+            		byte lastOp = NO_OPERATION;
             		for (int i = 0; i < numbers.length - 1; i++) {
-            			solution.append(numbers[i]);
-            			if (lastOp != NOOP && operands[i] >= 3 && lastOp <= 2) {
-            				solution.append(")");
-            				solution.insert(0, "(");
+            			foundSolution.append(numbers[i]);
+            			if (lastOp != NO_OPERATION && operands[i] >= 3 && lastOp <= 2) {
+            				foundSolution.append(")");
+            				foundSolution.insert(0, "(");
             			}
             			lastOp = operands[i];
             			switch (operands[i]) {
-            			case ADD:
-            				solution.append(" + ");
+            			case SUM:
+            				foundSolution.append(CR_SUM);
             				break;
-            			case SUBTRACT:
-            				solution.append(" - ");
+            			case SUBTRACTION:
+            				foundSolution.append(CR_SUBTRACTION);
             				break;
-            			case MULTIPLY:
-            				solution.append("*");
+            			case MULTIPLICATION:
+            				foundSolution.append(CR_MULTIPLICATION);
             				break;
-            			case DIVIDE:
-            				solution.append("/");
+            			case DIVISION:
+            				foundSolution.append(CR_DIVISION);
             				break;
             			}
             		}
-            		solution.append(numbers[numbers.length - 1]);
-            		this.solutions.add(solution.toString());
+            		foundSolution.append(numbers[numbers.length - 1]);
+            		this.solutions.add(foundSolution.toString());
             	}
             }
-        }
-        else {
+        } else {
         	if (pos == 0) {
-                operate(numbers, operands, ++pos);
-            }
-            else {
-                int newPos = pos + 1;
-                int previousPos = pos - 1;
-                operands[previousPos] = ADD;
-                operate(numbers, operands, newPos);
-                operands[previousPos] = SUBTRACT;
-                operate(numbers, operands, newPos);
-                operands[previousPos] = MULTIPLY;
-                operate(numbers, operands, newPos);
-                operands[previousPos] = DIVIDE;
-                operate(numbers, operands, newPos);
-            }
+        		operate(numbers, operands, ++pos);
+        	} else {
+        		int newPos = pos + 1;
+        		int previousPos = pos - 1;
+        		operands[previousPos] = SUM;
+        		operate(numbers, operands, newPos);
+        		operands[previousPos] = SUBTRACTION;
+        		operate(numbers, operands, newPos);
+        		operands[previousPos] = MULTIPLICATION;
+        		operate(numbers, operands, newPos);
+        		operands[previousPos] = DIVISION;
+        		operate(numbers, operands, newPos);
+        	}
         }
     }
     
@@ -246,7 +235,7 @@ public class Solver {
     }
     
     public int getSolutionCount() {
-        return this.solutionCount;
+        return this.solutionsCount;
     }
     
     public int getBestSolutionCount() {
