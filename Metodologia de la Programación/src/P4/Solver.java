@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class Solver {
     
+	//private int contador = 0;
 	/* Atributos de la clase */
     private int targetNumber = 0;
     private int solutionsCount = 0;
@@ -57,6 +58,7 @@ public class Solver {
         System.out.println("\nNúmero objetivo: " + this.targetNumber);
         boolean combinations[] = new boolean[this.numbers.length];
         generateAllCombinations(this.numbers, combinations);
+        //System.out.println(contador);
     }
     
     /**
@@ -214,6 +216,9 @@ public class Solver {
     				totalResult += numbers[i];
     				break;
     			case SUBTRACTION:
+    				if (totalResult - numbers[i] < 0) { /* Comprobar si el resulto es negativo */
+    					return;
+    				}
     				totalResult -= numbers[i];
     				break;
     			case MULTIPLICATION:
@@ -252,6 +257,7 @@ public class Solver {
         		calculate(numbers, operands, newPosition);
         	}
         }
+    	//contador++;
     }
     
     /* Getters */
